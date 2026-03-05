@@ -1,7 +1,7 @@
 import { VStack } from "@/components/ui/vstack";
+import { setAsyncStorageItem } from "@/utils/libs";
 import { SignupSchema, SignupType } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link, router } from "expo-router";
 import { Lock, Mail, User2 } from "lucide-react-native";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,7 @@ export function SignupForm() {
 
   const onSubmit = async (data: SignupType) => {
     // Save email for verification screen
-    await AsyncStorage.setItem("verify_email", data.email);
+    await setAsyncStorageItem("verify_email", data.email);
 
     router.push("/(auth)/verify-email");
     console.log("Signup Payload:", data);

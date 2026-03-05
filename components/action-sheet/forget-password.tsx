@@ -1,11 +1,3 @@
-import {
-  Actionsheet,
-  ActionsheetBackdrop,
-  ActionsheetContent,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-} from "@/components/ui/actionsheet";
-
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
 import { useState } from "react";
@@ -27,6 +19,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AppButton } from "../app-button";
 import { AppFormInput, OtpInput } from "../form-fields";
+import KeyboardAwareActionsheet from "../keyboard-aware-components/action-sheet";
 
 type ForgotPasswordSheetProps = {
   isOpen: boolean;
@@ -50,7 +43,7 @@ export function ForgotPasswordActionsheet({
   isOpen,
   onClose,
 }: ForgotPasswordSheetProps) {
-  const [step, setStep] = useState<"email" | "otp" | "reset">("reset");
+  const [step, setStep] = useState<"email" | "otp" | "reset">("email");
   const [clientEmail, setClientEmail] = useState<string | null>(null);
 
   /* ---------------- EMAIL FORM ---------------- */
@@ -102,91 +95,84 @@ export function ForgotPasswordActionsheet({
   });
 
   return (
-    <Actionsheet isOpen={isOpen} onClose={onClose}>
-      <ActionsheetBackdrop />
-      <ActionsheetContent className="px-6 pb-8">
-        <ActionsheetDragIndicatorWrapper>
-          <ActionsheetDragIndicator />
-        </ActionsheetDragIndicatorWrapper>
+    <KeyboardAwareActionsheet isOpen={isOpen} onClose={onClose}>
+      {step === "email" && (
+        <VStack space="xl" className="mt-4 w-full">
+          <Text className="text-2xl font-bold">Forgot Password</Text>
+          <Text className="text-gray-400">
+            Enter your email to receive a verification code
+          </Text>
 
-        {step === "email" && (
-          <VStack space="xl" className="mt-4 w-full">
-            <Text className="text-2xl font-bold">Forgot Password</Text>
-            <Text className="text-gray-400">
-              Enter your email to receive a verification code
-            </Text>
+          <AppFormInput
+            control={emailControl}
+            name="email"
+            label="Email"
+            placeholder="john@example.com"
+            size="lg"
+            leftIcon={Mail}
+          />
 
-            <AppFormInput
-              control={emailControl}
-              name="email"
-              label="Email"
-              placeholder="john@example.com"
-              size="lg"
-              leftIcon={Mail}
-            />
+          <AppButton
+            onPress={handleEmailSubmit(onSubmitEmail)}
+            title="Send Code"
+            height={50}
+          />
+        </VStack>
+      )}
 
-            <AppButton
-              onPress={handleEmailSubmit(onSubmitEmail)}
-              title="Send Code"
-              height={50}
-            />
-          </VStack>
-        )}
+      {step === "otp" && (
+        <VStack space="xl" className="mt-4 w-full">
+          <Text className="text-2xl font-bold">Verify Code</Text>
 
-        {step === "otp" && (
-          <VStack space="xl" className="mt-4 w-full">
-            <Text className="text-2xl font-bold">Verify Code</Text>
+          <OtpInput control={otpControl} name="otp" length={4} />
 
-            <OtpInput control={otpControl} name="otp" length={4} />
+          <AppButton
+            title="Verify Code"
+            onPress={handleOtpSubmit(onSubmitOtp)}
+            height={50}
+          />
 
-            <AppButton
-              title="Verify Code"
-              onPress={handleOtpSubmit(onSubmitOtp)}
-              height={50}
-            />
+          <HStack className="justify-center">
+            {isRunning && (
+              <Text className="text-gray-400">
+                Expires in {minutes}:{seconds.toString().padStart(2, "0")}
+              </Text>
+            )}
+          </HStack>
+        </VStack>
+      )}
 
-            <HStack className="justify-center">
-              {isRunning && (
-                <Text className="text-gray-400">
-                  Expires in {minutes}:{seconds.toString().padStart(2, "0")}
-                </Text>
-              )}
-            </HStack>
-          </VStack>
-        )}
+      {step === "reset" && (
+        <VStack space="xl" className="mt-4 w-full">
+          <Text className="text-2xl font-bold">Create New Password</Text>
 
-        {step === "reset" && (
-          <VStack space="xl" className="mt-4 w-full">
-            <Text className="text-2xl font-bold">Create New Password</Text>
+          <AppFormInput
+            control={resetControl}
+            name="password"
+            label="New Password"
+            type="password"
+            size="lg"
+            leftIcon={Lock}
+            placeholder="Enter new password"
+          />
 
-            <AppFormInput
-              control={resetControl}
-              name="password"
-              label="New Password"
-              type="password"
-              size="lg"
-              leftIcon={Lock}
-              placeholder="Enter new password"
-            />
+          <AppFormInput
+            control={resetControl}
+            name="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            size="lg"
+            leftIcon={Lock}
+            placeholder="Re-enter password"
+          />
 
-            <AppFormInput
-              control={resetControl}
-              name="confirmPassword"
-              label="Confirm Password"
-              type="password"
-              size="lg"
-              leftIcon={Lock}
-              placeholder="Re-enter password"
-            />
-
-            <AppButton
-              title="Reset Password"
-              onPress={handleResetSubmit(onSubmitReset)}
-              height={50}
-            />
-          </VStack>
-        )}
-      </ActionsheetContent>
-    </Actionsheet>
+          <AppButton
+            title="Reset Password"
+            onPress={handleResetSubmit(onSubmitReset)}
+            height={50}
+          />
+        </VStack>
+      )}
+    </KeyboardAwareActionsheet>
   );
 }

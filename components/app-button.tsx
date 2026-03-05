@@ -3,7 +3,7 @@ import { Button, ButtonText } from "./ui/button";
 export const AppButton = ({
   title,
   onPress,
-  height = 40,
+  height = 50,
 }: {
   title: string;
   onPress: () => void;
@@ -15,7 +15,9 @@ export const AppButton = ({
       style={{ height }}
       className="bg-purple-500 active:bg-purple-600 rounded-full"
     >
-      <ButtonText className="font-semibold text-white">{title}</ButtonText>
+      <ButtonText className="font-semibold text-white text-base">
+        {title}
+      </ButtonText>
     </Button>
   );
 };

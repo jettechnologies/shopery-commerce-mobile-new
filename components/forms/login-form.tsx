@@ -5,6 +5,7 @@ import { Pressable, Text, View } from "react-native";
 
 import { LoginSchema, LoginType } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { ForgotPasswordActionsheet } from "../action-sheet";
 import { AppButton } from "../app-button";
@@ -56,6 +57,12 @@ export function LoginForm() {
           title="Sign In"
           height={50}
         />
+        <Text className="text-center text-gray-500 mt-4">
+          Dont have an account?{" "}
+          <Link href="/(auth)/signup">
+            <Text className="text-purple-500">Signup</Text>
+          </Link>
+        </Text>
       </Box>
 
       {isForgetPassowrdActive && (

@@ -59,8 +59,6 @@ export default function RootLayout() {
     return null;
   }
 
-  // colorScheme === "dark" ? "dark" : "light"
-
   return (
     <GluestackUIProvider mode="light">
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>

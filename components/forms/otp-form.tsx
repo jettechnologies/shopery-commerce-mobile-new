@@ -1,18 +1,19 @@
 import { useForm } from "react-hook-form";
 import { useTimer } from "react-timer-hook";
 
-import { Button, ButtonText } from "@/components/ui/button";
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
+import { OtpSchema, OtpType } from "@/utils/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { router } from "expo-router";
 import { Text } from "react-native";
+import { AppButton } from "../app-button";
 import { OtpInput } from "../form-fields";
 
-type OtpPayload = {
-  otp: string;
-};
-
 export function OtpForm() {
-  const { control, handleSubmit } = useForm<OtpPayload>();
+  const { control, handleSubmit } = useForm<OtpType>({
+    resolver: zodResolver(OtpSchema),
+  });
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 120);
@@ -30,37 +31,19 @@ export function OtpForm() {
     restart(newTime);
   };
 
-  const onSubmit = (data: OtpPayload) => {
+  const onSubmit = (data: OtpType) => {
     console.log("OTP:", data.otp);
+    router.push("/(tabs)");
   };
 
   return (
     <VStack space="xl">
-      <OtpInput
-        control={control}
-        name="otp"
-        label="Verification Code"
-        helperText="Enter the 4-digit code sent to your email"
-        length={4}
-        rules={{
-          required: "OTP is required",
-          minLength: {
-            value: 4,
-            message: "Must be 4 digits",
-          },
-        }}
-      />
+      <OtpInput control={control} name="otp" length={4} />
 
-      <Button
-        className="rounded-full bg-purple-600"
-        onPress={handleSubmit(onSubmit)}
-      >
-        <ButtonText className="text-white font-semibold">Verify</ButtonText>
-      </Button>
+      <AppButton title="Verify" onPress={handleSubmit(onSubmit)} />
 
-      {/* Resend Section */}
       <HStack className="justify-center items-center space-x-1">
-        <Text className="text-gray-500">Didn’t receive the code?</Text>
+        <Text className="text-gray-500 mr-2">Didn’t receive the code?</Text>
 
         {isRunning ? (
           <Text className="text-gray-400 font-medium">

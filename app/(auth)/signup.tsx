@@ -6,7 +6,7 @@ import { Text, View } from "react-native";
 const Signup = () => {
   return (
     <SafeScreen>
-      <View className="w-full h-screen flex px-6 flex-col gap-y-12">
+      <View className="w-full h-screen flex px-6 flex-col gap-y-12 py-4">
         <VStack className="gap-y-3">
           <Text className="font-bold text-2xl text-black capitalize">
             Create Account
