@@ -1,5 +1,5 @@
 import { Image } from "expo-image";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 
 type Props = {
   image: any;
@@ -15,13 +15,13 @@ export const OnboardingSlide = ({ image, title, description }: Props) => {
         contentFit="cover"
         style={{
           width: "100%",
-          height: 350,
-          borderRadius: 30,
+          height: 400,
+          borderRadius: 50,
         }}
       />
 
       <View className="mt-8 items-center">
-        <Text className="px-4 text-center text-xl font-bold">{title}</Text>
+        <Text className="px-4 text-center text-2xl font-bold">{title}</Text>
 
         <Text className="mt-3 px-6 text-center text-gray-500">
           {description}

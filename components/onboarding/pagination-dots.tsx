@@ -27,7 +27,7 @@ const PaginationDot = ({ index, current }: PaginationDotProps) => {
   return (
     <Animated.View
       style={animatedStyle}
-      className="bg-primary500 h-2 rounded-full"
+      className="bg-purple-500 h-2 rounded-full"
     />
   );
 };

@@ -11,11 +11,11 @@ import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
-import "@/global.css";
-import { ToastProvider } from "@/context/toast-provider";
 import TanstackQueryProvider from "@/context/tanstack-provider";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { ToastProvider } from "@/context/toast-provider";
+import "@/global.css";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
@@ -59,8 +59,10 @@ export default function RootLayout() {
     return null;
   }
 
+  // colorScheme === "dark" ? "dark" : "light"
+
   return (
-    <GluestackUIProvider mode="dark">
+    <GluestackUIProvider mode="light">
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <ToastProvider>
           <TanstackQueryProvider>
