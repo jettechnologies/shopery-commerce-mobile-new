@@ -3,6 +3,10 @@ import { useTimer } from "react-timer-hook";
 
 import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
+import {
+  useResendVerification,
+  useVerifyEmail,
+} from "@/services/tanstack-query/mutations";
 import { OtpSchema, OtpType } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
@@ -10,10 +14,18 @@ import { Text } from "react-native";
 import { AppButton } from "../app-button";
 import { OtpInput } from "../form-fields";
 
-export function OtpForm() {
-  const { control, handleSubmit } = useForm<OtpType>({
+export function OtpForm({ email }: { email: string }) {
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<OtpType>({
     resolver: zodResolver(OtpSchema),
   });
+
+  const { mutateAsync: verifyEmail, isPending: verifying } = useVerifyEmail();
+  const { mutateAsync: resendVerification, isPending: resending } =
+    useResendVerification();
 
   const time = new Date();
   time.setSeconds(time.getSeconds() + 120);
@@ -23,16 +35,17 @@ export function OtpForm() {
     autoStart: true,
   });
 
-  const handleResend = () => {
-    console.log("Resending OTP...");
+  const handleResend = async () => {
+    await resendVerification({ email });
 
     const newTime = new Date();
-    newTime.setSeconds(newTime.getSeconds() + 60);
+    newTime.setSeconds(newTime.getSeconds() + 120);
     restart(newTime);
   };
 
-  const onSubmit = (data: OtpType) => {
-    console.log("OTP:", data.otp);
+  const onSubmit = async (data: OtpType) => {
+    await verifyEmail({ email, otp: data.otp });
+
     router.push("/(tabs)");
   };
 
@@ -40,7 +53,11 @@ export function OtpForm() {
     <VStack space="xl">
       <OtpInput control={control} name="otp" length={4} />
 
-      <AppButton title="Verify" onPress={handleSubmit(onSubmit)} />
+      <AppButton
+        title="Verify"
+        onPress={handleSubmit(onSubmit)}
+        isLoading={verifying || isSubmitting}
+      />
 
       <HStack className="justify-center items-center space-x-1">
         <Text className="text-gray-500 mr-2">Didn’t receive the code?</Text>
@@ -54,7 +71,7 @@ export function OtpForm() {
             className="text-purple-600 font-semibold"
             onPress={handleResend}
           >
-            Resend
+            {resending ? "Resending..." : "Resend"}
           </Text>
         )}
       </HStack>

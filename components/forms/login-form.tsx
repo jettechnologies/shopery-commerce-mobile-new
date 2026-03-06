@@ -3,9 +3,10 @@ import { Lock, Mail } from "lucide-react-native";
 import { useForm } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
 
+import { useLogin } from "@/services/tanstack-query/mutations";
 import { LoginSchema, LoginType } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { ForgotPasswordActionsheet } from "../action-sheet";
 import { AppButton } from "../app-button";
@@ -13,13 +14,22 @@ import { AppFormInput } from "../form-fields";
 import { Box } from "../ui/box";
 
 export function LoginForm() {
-  const { control, handleSubmit } = useForm<LoginType>({
+  const router = useRouter();
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
   });
   const [isForgetPassowrdActive, setIsForgetPassowrdActive] = useState(false);
 
-  const onSubmit = (data: LoginType) => {
-    console.log("Login Payload:", data);
+  const { mutateAsync: login, isPending: logging } = useLogin();
+
+  const onSubmit = async (data: LoginType) => {
+    await login(data);
+
+    router.push("/(tabs)");
   };
 
   return (
@@ -56,6 +66,7 @@ export function LoginForm() {
           onPress={handleSubmit(onSubmit)}
           title="Sign In"
           height={50}
+          isLoading={isSubmitting || logging}
         />
         <Text className="text-center text-gray-500 mt-4">
           Dont have an account?{" "}

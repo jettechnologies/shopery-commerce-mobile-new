@@ -23,6 +23,7 @@
     "@react-navigation/native": "^7.1.8",
     "@tanstack/react-query": "^5.90.21",
     "async-store": "^1.0.3",
+    "dotenv": "^17.3.1",
     "expo": "~54.0.33",
     "expo-constants": "~18.0.13",
     "expo-font": "~14.0.11",

@@ -6,10 +6,13 @@ import PagerView from "react-native-pager-view";
 
 import { AppButton } from "@/components/app-button";
 import { OnboardingSlide, PaginationDots } from "@/components/onboarding";
+import { useCreateGuestCart } from "@/services/tanstack-query/mutations";
 
 export default function OnboardingScreen() {
   const pagerRef = useRef<PagerView | null>(null);
   const [page, setPage] = useState(0);
+
+  const { mutateAsync: createGuestCart } = useCreateGuestCart();
 
   const slides = [
     {
@@ -42,11 +45,16 @@ export default function OnboardingScreen() {
     return () => clearInterval(interval);
   }, [page, slides.length]);
 
+  const handleCreateGuestCart = async () => {
+    await createGuestCart();
+    router.replace("/(tabs)");
+  };
+
   return (
     <SafeScreen>
       <View className="flex-1 px-6 pb-3">
         <View className="mb-2 mt-4 items-end">
-          <Pressable onPress={() => router.replace("/(tabs)")}>
+          <Pressable onPress={() => handleCreateGuestCart}>
             <Text className="text-purple-600 font-semibold">
               Continue as Guest
             </Text>

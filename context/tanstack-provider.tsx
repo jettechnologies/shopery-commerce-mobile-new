@@ -1,4 +1,3 @@
-import type { ToastStatus } from "./toast-provider";
 import { useToastContext } from "@/hooks/context";
 import {
   MutationCache,
@@ -7,6 +6,7 @@ import {
   type QueryKey,
 } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import type { ToastStatus } from "./toast-provider";
 // import { toast } from "sonner";
 
 // Extend MutationMeta to allow our custom keys

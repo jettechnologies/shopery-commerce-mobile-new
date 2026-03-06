@@ -1,4 +1,5 @@
 import { VStack } from "@/components/ui/vstack";
+import { useRegister } from "@/services/tanstack-query/mutations";
 import { setAsyncStorageItem } from "@/utils/libs";
 import { SignupSchema, SignupType } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,16 +12,25 @@ import { AppFormInput } from "../form-fields";
 import { Box } from "../ui/box";
 
 export function SignupForm() {
-  const { control, handleSubmit } = useForm<SignupType>({
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<SignupType>({
     resolver: zodResolver(SignupSchema),
   });
+
+  const { mutateAsync: registerUser, isPending: registering } = useRegister();
 
   const onSubmit = async (data: SignupType) => {
     // Save email for verification screen
     await setAsyncStorageItem("verify_email", data.email);
 
+    await registerUser(data);
+
+    await setAsyncStorageItem("onboarding", true);
+
     router.push("/(auth)/verify-email");
-    console.log("Signup Payload:", data);
   };
 
   return (
@@ -58,6 +68,7 @@ export function SignupForm() {
           onPress={handleSubmit(onSubmit)}
           title="Create Account"
           height={50}
+          isLoading={registering || isSubmitting}
         />
 
         <Text className="text-center text-gray-500 mt-4">

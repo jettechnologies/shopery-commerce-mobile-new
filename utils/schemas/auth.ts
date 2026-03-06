@@ -91,6 +91,10 @@ export type OtpType = z.infer<typeof OtpSchema>;
 
 export const NewPasswordSchema = z
   .object({
+    otp: z
+      .string()
+      .length(4, "OTP must be 4 digits")
+      .regex(/^\d+$/, "OTP must contain only numbers"),
     password: z
       .string()
       .min(6)

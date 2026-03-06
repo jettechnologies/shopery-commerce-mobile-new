@@ -9,12 +9,14 @@ import { useTimer } from "react-timer-hook";
 import { Lock, Mail } from "lucide-react-native";
 
 import {
+  useForgotPassword,
+  useResetPassword,
+} from "@/services/tanstack-query/mutations";
+import {
   ForgotEmailSchema,
   ForgotEmailType,
   NewPasswordSchema,
   NewPasswordType,
-  OtpSchema,
-  OtpType,
 } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AppButton } from "../app-button";
@@ -26,24 +28,30 @@ type ForgotPasswordSheetProps = {
   onClose: () => void;
 };
 
-type EmailPayload = {
-  email: string;
-};
+// type EmailPayload = {
+//   email: string;
+// };
 
-type OtpPayload = {
-  otp: string;
-};
+// type OtpPayload = {
+//   otp: string;
+// };
 
-type ResetPayload = {
-  password: string;
-  confirmPassword: string;
-};
+// type ResetPayload = {
+//   password: string;
+//   confirmPassword: string;
+// };
 
 export function ForgotPasswordActionsheet({
   isOpen,
   onClose,
 }: ForgotPasswordSheetProps) {
   const [step, setStep] = useState<"email" | "otp" | "reset">("email");
+
+  const { mutateAsync: forgotPassword, isPending: forgotPasswordPending } =
+    useForgotPassword();
+  const { mutateAsync: resetPassword, isPending: resetPasswordPending } =
+    useResetPassword();
+
   const [clientEmail, setClientEmail] = useState<string | null>(null);
 
   /* ---------------- EMAIL FORM ---------------- */
@@ -52,20 +60,13 @@ export function ForgotPasswordActionsheet({
       resolver: zodResolver(ForgotEmailSchema),
     });
 
-  const onSubmitEmail = (data: EmailPayload) => {
-    console.log("Send reset email:", data.email);
+  const onSubmitEmail = async (data: ForgotEmailType) => {
+    await forgotPassword({ email: data.email });
     setClientEmail(data.email);
     setStep("otp");
   };
 
-  /* ---------------- OTP FORM ---------------- */
-  const { control: otpControl, handleSubmit: handleOtpSubmit } =
-    useForm<OtpType>({
-      resolver: zodResolver(OtpSchema),
-    });
-
-  const onSubmitOtp = (data: OtpPayload) => {
-    console.log("Verify OTP:", data.otp);
+  const onSubmitOtp = () => {
     setStep("reset");
   };
 
@@ -75,12 +76,18 @@ export function ForgotPasswordActionsheet({
       resolver: zodResolver(NewPasswordSchema),
     });
 
-  const onSubmitReset = (data: ResetPayload) => {
-    console.log("Reset Password:", data);
-
+  const onSubmitReset = async (data: NewPasswordType) => {
     if (data.password !== data.confirmPassword) {
       return alert("Passwords do not match");
     }
+
+    const resetPasswordData = {
+      otp: data.otp,
+      email: clientEmail || "",
+      password: data.password,
+    };
+
+    await resetPassword(resetPasswordData);
 
     onClose();
     setStep("email");
@@ -116,6 +123,7 @@ export function ForgotPasswordActionsheet({
             onPress={handleEmailSubmit(onSubmitEmail)}
             title="Send Code"
             height={50}
+            isLoading={forgotPasswordPending}
           />
         </VStack>
       )}
@@ -124,13 +132,9 @@ export function ForgotPasswordActionsheet({
         <VStack space="xl" className="mt-4 w-full">
           <Text className="text-2xl font-bold">Verify Code</Text>
 
-          <OtpInput control={otpControl} name="otp" length={4} />
+          <OtpInput control={resetControl} name="otp" length={4} />
 
-          <AppButton
-            title="Verify Code"
-            onPress={handleOtpSubmit(onSubmitOtp)}
-            height={50}
-          />
+          <AppButton title="Verify Code" onPress={onSubmitOtp} height={50} />
 
           <HStack className="justify-center">
             {isRunning && (
@@ -170,6 +174,7 @@ export function ForgotPasswordActionsheet({
             title="Reset Password"
             onPress={handleResetSubmit(onSubmitReset)}
             height={50}
+            isLoading={resetPasswordPending}
           />
         </VStack>
       )}

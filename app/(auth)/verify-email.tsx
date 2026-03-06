@@ -44,7 +44,7 @@ const VerifyEmail = () => {
           </Text>
         </VStack>
 
-        <OtpForm />
+        <OtpForm email={userEmail} />
       </View>
     </SafeScreen>
   );
