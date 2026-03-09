@@ -44,9 +44,13 @@ export function OtpForm({ email }: { email: string }) {
   };
 
   const onSubmit = async (data: OtpType) => {
-    await verifyEmail({ email, otp: data.otp });
+    try {
+      await verifyEmail({ email, otp: data.otp });
 
-    router.push("/(tabs)");
+      router.push("/(tabs)");
+    } catch (error: any) {
+      console.log(error.message, "error");
+    }
   };
 
   return (

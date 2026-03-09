@@ -24,13 +24,17 @@ export function SignupForm() {
 
   const onSubmit = async (data: SignupType) => {
     // Save email for verification screen
-    await setAsyncStorageItem("verify_email", data.email);
+    try {
+      await setAsyncStorageItem("verify_email", data.email);
 
-    await registerUser(data);
+      await registerUser(data);
 
-    await setAsyncStorageItem("onboarding", true);
+      await setAsyncStorageItem("onboarding", true);
 
-    router.push("/(auth)/verify-email");
+      router.push("/(auth)/verify-email");
+    } catch (error: any) {
+      console.log(error.message, "error");
+    }
   };
 
   return (

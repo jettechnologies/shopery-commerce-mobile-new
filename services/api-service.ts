@@ -14,6 +14,12 @@ class ApiError extends Error {
   }
 }
 
+export interface ApiErrorResponse {
+  status: number;
+  message: string;
+  error: string;
+}
+
 export async function apiRequest<T = any>(
   endpoint: string,
   options: RequestInit = {},

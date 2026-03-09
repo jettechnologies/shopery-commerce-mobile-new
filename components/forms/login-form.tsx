@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { Pressable, Text, View } from "react-native";
 
 import { useLogin } from "@/services/tanstack-query/mutations";
+import { setAsyncStorageItem } from "@/utils/libs";
 import { LoginSchema, LoginType } from "@/utils/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useRouter } from "expo-router";
@@ -22,14 +23,21 @@ export function LoginForm() {
   } = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
   });
+
   const [isForgetPassowrdActive, setIsForgetPassowrdActive] = useState(false);
 
   const { mutateAsync: login, isPending: logging } = useLogin();
 
   const onSubmit = async (data: LoginType) => {
-    await login(data);
+    try {
+      await login(data);
 
-    router.push("/(tabs)");
+      await setAsyncStorageItem("onboarding", true);
+
+      router.push("/(tabs)");
+    } catch (error: any) {
+      console.log(error.message, "error");
+    }
   };
 
   return (

@@ -28,19 +28,6 @@ type ForgotPasswordSheetProps = {
   onClose: () => void;
 };
 
-// type EmailPayload = {
-//   email: string;
-// };
-
-// type OtpPayload = {
-//   otp: string;
-// };
-
-// type ResetPayload = {
-//   password: string;
-//   confirmPassword: string;
-// };
-
 export function ForgotPasswordActionsheet({
   isOpen,
   onClose,
@@ -61,9 +48,13 @@ export function ForgotPasswordActionsheet({
     });
 
   const onSubmitEmail = async (data: ForgotEmailType) => {
-    await forgotPassword({ email: data.email });
-    setClientEmail(data.email);
-    setStep("otp");
+    try {
+      await forgotPassword({ email: data.email });
+      setClientEmail(data.email);
+      setStep("otp");
+    } catch (error: any) {
+      console.log(error.message, "error");
+    }
   };
 
   const onSubmitOtp = () => {
@@ -77,20 +68,24 @@ export function ForgotPasswordActionsheet({
     });
 
   const onSubmitReset = async (data: NewPasswordType) => {
-    if (data.password !== data.confirmPassword) {
-      return alert("Passwords do not match");
+    try {
+      if (data.password !== data.confirmPassword) {
+        return alert("Passwords do not match");
+      }
+
+      const resetPasswordData = {
+        otp: data.otp,
+        email: clientEmail || "",
+        password: data.password,
+      };
+
+      await resetPassword(resetPasswordData);
+
+      onClose();
+      setStep("email");
+    } catch (error: any) {
+      console.log(error.message, "error");
     }
-
-    const resetPasswordData = {
-      otp: data.otp,
-      email: clientEmail || "",
-      password: data.password,
-    };
-
-    await resetPassword(resetPasswordData);
-
-    onClose();
-    setStep("email");
   };
 
   const time = new Date();
