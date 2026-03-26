@@ -6,6 +6,7 @@ import PagerView from "react-native-pager-view";
 
 import { AppButton } from "@/components/app-button";
 import { OnboardingSlide, PaginationDots } from "@/components/onboarding";
+import { SLIDES } from "@/data";
 import { useCreateGuestCart } from "@/services/tanstack-query/mutations";
 
 export default function OnboardingScreen() {
@@ -14,36 +15,15 @@ export default function OnboardingScreen() {
 
   const { mutateAsync: createGuestCart } = useCreateGuestCart();
 
-  const slides = [
-    {
-      image: require("@/assets/images/onboarding-one.jpg"),
-      title: "Various Collections Of The Latest Products",
-      description:
-        "Urna amet, suspendisse ullamcorper ac elit diam facilisis cursus vestibulum.",
-    },
-    {
-      image: require("@/assets/images/onboarding-two.jpg"),
-      title: "Complete Collection Of Colors And Sizes",
-      description:
-        "Urna amet, suspendisse ullamcorper ac elit diam facilisis cursus vestibulum.",
-    },
-    {
-      image: require("@/assets/images/onboarding-three.jpg"),
-      title: "Find The Most Suitable Outfit For You",
-      description:
-        "Urna amet, suspendisse ullamcorper ac elit diam facilisis cursus vestibulum.",
-    },
-  ];
-
   useEffect(() => {
     const interval = setInterval(() => {
-      if (page < slides.length - 1) {
+      if (page < SLIDES.length - 1) {
         pagerRef.current?.setPage(page + 1);
       }
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [page, slides.length]);
+  }, [page]);
 
   const handleCreateGuestCart = async () => {
     await createGuestCart();
@@ -68,21 +48,21 @@ export default function OnboardingScreen() {
             initialPage={0}
             onPageSelected={(e) => setPage(e.nativeEvent.position)}
           >
-            {slides.map((slide, index) => (
+            {SLIDES.map((slide, index) => (
               <View key={index} style={{ flex: 1 }}>
                 <OnboardingSlide {...slide} />
               </View>
             ))}
           </PagerView>
 
-          <PaginationDots total={slides.length} current={page} />
+          <PaginationDots total={SLIDES.length} current={page} />
         </View>
 
         <View className="mb-8 mt-4">
           <AppButton
-            title={page === slides.length - 1 ? "Create Account" : "Next"}
+            title={page === SLIDES.length - 1 ? "Create Account" : "Next"}
             onPress={() => {
-              if (page === slides.length - 1) {
+              if (page === SLIDES.length - 1) {
                 router.replace("/signup");
               } else {
                 const next = page + 1;

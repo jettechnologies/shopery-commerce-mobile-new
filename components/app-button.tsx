@@ -32,7 +32,10 @@ export const AppButton = ({
       ) : (
         <>
           {title && (
-            <ButtonText className="font-semibold text-white text-base">
+            <ButtonText
+              className="font-semibold text-white text-base"
+              style={{ minWidth: 50 }}
+            >
               {title}
             </ButtonText>
           )}
@@ -42,37 +45,3 @@ export const AppButton = ({
     </Button>
   );
 };
-
-// import { Button, ButtonSpinner, ButtonText } from "./ui/button";
-
-// type ButtonProps = typeof Button;
-
-// interface AppButtonProps extends ButtonProps {
-//   title: string;
-//   onPress: () => void;
-//   height?: number;
-//   isLoading?: boolean;
-//   className?: string;
-//   variant?: ButtonProps["variant"];
-// }
-
-// export const AppButton = ({
-//   title,
-//   onPress,
-//   height = 50,
-//   isLoading,
-//   className,
-// }: AppButtonProps) => {
-//   return (
-//     <Button
-//       onPress={onPress}
-//       style={{ height }}
-//       className="bg-purple-500 active:bg-purple-600 rounded-full"
-//     >
-//       <ButtonText className="font-semibold text-white text-base">
-//         {title}
-//       </ButtonText>
-//       {isLoading && <ButtonSpinner />}
-//     </Button>
-//   );
-// };

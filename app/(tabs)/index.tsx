@@ -1,107 +1,178 @@
-import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
-
-import { HelloWave } from "@/components/hello-wave";
-import ParallaxScrollView from "@/components/parallax-scroll-view";
-import { ThemedText } from "@/components/themed-text";
-import { ThemedView } from "@/components/themed-view";
+import { SafeScreen } from "@/components/safe-screen";
+import { CategoryCard, ProductCard } from "@/components/shared";
+import {
+  Avatar,
+  AvatarFallbackText,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { Box } from "@/components/ui/box";
+import { HStack } from "@/components/ui/hstack";
+import { VStack } from "@/components/ui/vstack";
+import { useTabBar } from "@/context/tab-bar-provider";
+import { CATEGORY_DATA, CATEGORY_PRODUCTS_DATA } from "@/data";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Link } from "expo-router";
+import { BellIcon, SearchIcon } from "lucide-react-native";
+import { useState } from "react";
+import {
+  FlatList,
+  LayoutAnimation,
+  Pressable,
+  SectionList,
+  Text,
+  View,
+} from "react-native";
 
-export default function HomeScreen() {
+const HomeScreen = () => {
+  const [currentView, setCurrentView] = useState<"home" | "category">("home");
+
+  const tabBarHeight = useBottomTabBarHeight();
+  const { handleScroll, hidden } = useTabBar();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
-      headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome! fuck u</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{" "}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{" "}
-          to see changes. Press{" "}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: "cmd + d",
-              android: "cmd + m",
-              web: "F12",
-            })}
-          </ThemedText>{" "}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction
-              title="Action"
-              icon="cube"
-              onPress={() => alert("Action pressed")}
-            />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert("Share pressed")}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert("Delete pressed")}
+    <SafeScreen>
+      <View>
+        <HStack className="px-4 py-4 justify-between">
+          <HStack className="gap-x-3">
+            <Avatar size="md">
+              <AvatarFallbackText>Jane Doe</AvatarFallbackText>
+              <AvatarImage
+                source={require("@/assets/images/user-avatar.jpg")}
               />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+            </Avatar>
+            <VStack>
+              <Text className="text-[18px] text-black font-bold">Hi John</Text>
+              <Text className="text-sm font-normal text-gray-500">
+                Lets get shopping
+              </Text>
+            </VStack>
+          </HStack>
+          <HStack className="gap-x-2">
+            <Pressable className="p-2">
+              <SearchIcon size={24} color="black" />
+            </Pressable>
+            <Pressable className="p-2">
+              <BellIcon size={24} color="black" />
+            </Pressable>
+          </HStack>
+        </HStack>
+        <HStack className="px-4 justify-center gap-x-8 py-6">
+          <Pressable
+            onPress={() => {
+              LayoutAnimation.easeInEaseOut();
+              setCurrentView("home");
+            }}
+            className="w-[120px] flex flex-column items-center"
+          >
+            <Text
+              className={`font-base font-semibold ${currentView === "home" ? "text-black" : "text-gray-500"}`}
+            >
+              Home
+            </Text>
+            {currentView === "home" && (
+              <Box className="mt-2 w-[100px] h-0.5 bg-purple-600" />
+            )}
+          </Pressable>
+          <Pressable
+            onPress={() => {
+              LayoutAnimation.easeInEaseOut();
+              setCurrentView("category");
+            }}
+            className="w-[120px] flex flex-column items-center"
+          >
+            <Text
+              className={`font-base font-semibold ${currentView === "category" ? "text-black" : "text-gray-500"}`}
+            >
+              Category
+            </Text>
+            {currentView === "category" && (
+              <Box className="mt-2 w-[100px] h-0.5 bg-purple-600" />
+            )}
+          </Pressable>
+        </HStack>
+        {currentView === "home" ? (
+          <SectionList
+            sections={CATEGORY_PRODUCTS_DATA.map((item) => ({
+              title: item.category.name,
+              slug: item.category.slug,
+              data: [item],
+            }))}
+            keyExtractor={(item) => item.category.slug}
+            stickySectionHeadersEnabled={false}
+            contentContainerStyle={{
+              paddingHorizontal: 24,
+              paddingBottom: !hidden ? tabBarHeight + 60 : 0,
+            }}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+            renderSectionHeader={({ section }) => (
+              <HStack className="justify-between w-full mt-4">
+                <Text className="text-[16px] font-bold text-black">
+                  {section.title}
+                </Text>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">
-            npm run reset-project
-          </ThemedText>{" "}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{" "}
-          directory. This will move the current{" "}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{" "}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+                <Link
+                  href={`/category/${section.slug}`}
+                  style={{ minWidth: 50 }}
+                >
+                  <Text
+                    className="text-base font-semibold text-purple-500"
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >
+                    See All
+                  </Text>
+                </Link>
+              </HStack>
+            )}
+            renderItem={({ item }) => (
+              <FlatList
+                data={item.products}
+                keyExtractor={(product) => product.name}
+                numColumns={2}
+                scrollEnabled={false}
+                columnWrapperStyle={{
+                  justifyContent: "space-between",
+                  marginTop: 12,
+                }}
+                renderItem={({ item: product }) => (
+                  <ProductCard
+                    imgPath={product.image}
+                    name={product.name}
+                    price={product.price}
+                  />
+                )}
+              />
+            )}
+          />
+        ) : (
+          currentView === "category" && (
+            <FlatList
+              data={CATEGORY_DATA}
+              keyExtractor={(item) => item.slug}
+              contentContainerStyle={{
+                paddingBottom: !hidden ? tabBarHeight + 60 : 0,
+              }}
+              onScroll={handleScroll}
+              scrollEventThrottle={16}
+              renderItem={({ item, index }) => {
+                const isLast = index === CATEGORY_DATA.length - 1;
+
+                return (
+                  <Box className={`${!isLast ? "mb-6" : ""}`}>
+                    <CategoryCard
+                      {...item}
+                      variant={index % 2 === 0 ? "left" : "right"}
+                    />
+                  </Box>
+                );
+              }}
+            />
+          )
+        )}
+      </View>
+    </SafeScreen>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
-  },
-});
+export default HomeScreen;
