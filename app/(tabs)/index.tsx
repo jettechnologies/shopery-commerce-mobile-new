@@ -136,11 +136,14 @@ const HomeScreen = () => {
                   marginTop: 12,
                 }}
                 renderItem={({ item: product }) => (
+                  // <Link href={`/product/${product.id}`}>
                   <ProductCard
                     imgPath={product.image}
                     name={product.name}
                     price={product.price}
+                    id={product.id}
                   />
+                  // </Link>
                 )}
               />
             )}

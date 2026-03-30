@@ -30,37 +30,117 @@ export const CATEGORY_PRODUCTS_DATA = [
   {
     category: { slug: "new_arrivals", name: "New Arrivals" },
     products: [
-      { name: "Plain White Tee", price: 12.99, image: IMAGES.whiteTee },
-      { name: "Black Bag", price: 12.99, image: IMAGES.blackBag },
-      { name: "Plain Black Tee", price: 12.99, image: IMAGES.blackTee },
-      { name: "Sneakers", price: 12.99, image: IMAGES.sneakers },
+      {
+        id: "sug-1234",
+        name: "Plain White Tee",
+        price: 12.99,
+        image: IMAGES.whiteTee,
+      },
+      {
+        id: "sug-3456",
+        name: "Black Bag",
+        price: 12.99,
+        image: IMAGES.blackBag,
+      },
+      {
+        id: "sug-5678",
+        name: "Plain Black Tee",
+        price: 12.99,
+        image: IMAGES.blackTee,
+      },
+      {
+        id: "sug-0987",
+        name: "Sneakers",
+        price: 12.99,
+        image: IMAGES.sneakers,
+      },
     ],
   },
   {
     category: { slug: "clothes", name: "Clothes" },
     products: [
-      { name: "Plain White Tee", price: 12.99, image: IMAGES.whiteTee },
-      { name: "Black Bag", price: 12.99, image: IMAGES.blackBag },
-      { name: "Plain Black Tee", price: 12.99, image: IMAGES.blackTee },
-      { name: "Sneakers", price: 12.99, image: IMAGES.sneakers },
+      {
+        id: "sug-1234",
+        name: "Plain White Tee",
+        price: 12.99,
+        image: IMAGES.whiteTee,
+      },
+      {
+        id: "sug-3456",
+        name: "Black Bag",
+        price: 12.99,
+        image: IMAGES.blackBag,
+      },
+      {
+        id: "sug-5678",
+        name: "Plain Black Tee",
+        price: 12.99,
+        image: IMAGES.blackTee,
+      },
+      {
+        id: "sug-0987",
+        name: "Sneakers",
+        price: 12.99,
+        image: IMAGES.sneakers,
+      },
     ],
   },
   {
     category: { slug: "men_essentials", name: "Men Essentials" },
     products: [
-      { name: "Plain White Tee", price: 12.99, image: IMAGES.whiteTee },
-      { name: "Black Bag", price: 12.99, image: IMAGES.blackBag },
-      { name: "Plain Black Tee", price: 12.99, image: IMAGES.blackTee },
-      { name: "Sneakers", price: 12.99, image: IMAGES.sneakers },
+      {
+        id: "sug-1234",
+        name: "Plain White Tee",
+        price: 12.99,
+        image: IMAGES.whiteTee,
+      },
+      {
+        id: "sug-3456",
+        name: "Black Bag",
+        price: 12.99,
+        image: IMAGES.blackBag,
+      },
+      {
+        id: "sug-5678",
+        name: "Plain Black Tee",
+        price: 12.99,
+        image: IMAGES.blackTee,
+      },
+      {
+        id: "sug-0987",
+        name: "Sneakers",
+        price: 12.99,
+        image: IMAGES.sneakers,
+      },
     ],
   },
 ];
 
 export const PRODUCTS_DATA = [
-  { name: "Plain White Tee", price: 12.99, image: IMAGES.whiteTee },
-  { name: "Black Bag", price: 12.99, image: IMAGES.blackBag },
-  { name: "Plain Black Tee", price: 12.99, image: IMAGES.blackTee },
-  { name: "Sneakers", price: 12.99, image: IMAGES.sneakers },
+  {
+    id: "sug-1234",
+    name: "Plain White Tee",
+    price: 12.99,
+    image: IMAGES.whiteTee,
+  },
+  {
+    id: "sug-3456",
+    name: "Black Bag",
+    price: 12.99,
+    image: IMAGES.blackBag,
+  },
+  {
+    id: "sug-5678",
+    name: "Plain Black Tee",
+    price: 12.99,
+    image: IMAGES.blackTee,
+  },
+  {
+    id: "sug-0987",
+    name: "Sneakers",
+    price: 12.99,
+    image: IMAGES.sneakers,
+  },
 ];
 
 export const CATEGORY_DATA = [
@@ -119,3 +199,20 @@ export const CATEGORY_DATA = [
     bgTo: "bg-plush-100",
   },
 ];
+
+export const PRODUCT_COLORS = [
+  "#8B5CF6",
+  "#000",
+  "#22C55E",
+  "#06B6D4",
+  "#F59E0B",
+  "#EF4444",
+];
+
+export const PRODUCT_REVIEWS = Array.from({ length: 20 }).map((_, i) => ({
+  id: i,
+  name: "Alex Morgan",
+  text: "Great quality product, really impressed with the material.",
+  rating: Math.floor(Math.random() * 5) + 1,
+  createdAt: new Date().toISOString(),
+}));

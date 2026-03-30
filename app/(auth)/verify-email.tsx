@@ -4,11 +4,10 @@ import { Text, View } from "react-native";
 
 import { AppHeader } from "@/components/app-header";
 import { OtpForm } from "@/components/forms";
+import { SafeScreen } from "@/components/safe-screen";
 import { Box } from "@/components/ui/box";
 import { VStack } from "@/components/ui/vstack";
 import { getAsyncStorageItem } from "@/utils/libs";
-
-import { SafeScreen } from "../safe-screen";
 
 const VerifyEmail = () => {
   const [userEmail, setUserEmail] = useState<string>("");
