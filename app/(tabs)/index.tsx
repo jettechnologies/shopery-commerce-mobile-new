@@ -10,7 +10,6 @@ import { HStack } from "@/components/ui/hstack";
 import { VStack } from "@/components/ui/vstack";
 import { useTabBar } from "@/context/tab-bar-provider";
 import { CATEGORY_DATA, CATEGORY_PRODUCTS_DATA } from "@/data";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { Link } from "expo-router";
 import { BellIcon, SearchIcon } from "lucide-react-native";
 import { useState } from "react";
@@ -22,11 +21,13 @@ import {
   Text,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const HomeScreen = () => {
   const [currentView, setCurrentView] = useState<"home" | "category">("home");
 
-  const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
+  // const tabBarHeight = useBottomTabBarHeight();
   const { handleScroll, hidden } = useTabBar();
 
   return (
@@ -101,8 +102,9 @@ const HomeScreen = () => {
             stickySectionHeadersEnabled={false}
             contentContainerStyle={{
               paddingHorizontal: 24,
-              paddingBottom: !hidden ? tabBarHeight + 60 : 0,
+              // paddingBottom: !hidden ? tabBarHeight + 60 : 0,
             }}
+            contentInsetAdjustmentBehavior="automatic"
             onScroll={handleScroll}
             scrollEventThrottle={16}
             renderSectionHeader={({ section }) => (
@@ -136,14 +138,12 @@ const HomeScreen = () => {
                   marginTop: 12,
                 }}
                 renderItem={({ item: product }) => (
-                  // <Link href={`/product/${product.id}`}>
                   <ProductCard
                     imgPath={product.image}
                     name={product.name}
                     price={product.price}
                     id={product.id}
                   />
-                  // </Link>
                 )}
               />
             )}
@@ -153,11 +153,15 @@ const HomeScreen = () => {
             <FlatList
               data={CATEGORY_DATA}
               keyExtractor={(item) => item.slug}
-              contentContainerStyle={{
-                paddingBottom: !hidden ? tabBarHeight + 60 : 0,
-              }}
+              contentContainerStyle={
+                {
+                  // paddingBottom: !hidden ? tabBarHeight + 60 : 0,
+                }
+              }
+              contentInsetAdjustmentBehavior="automatic"
               onScroll={handleScroll}
               scrollEventThrottle={16}
+              className="border-2 border-black"
               renderItem={({ item, index }) => {
                 const isLast = index === CATEGORY_DATA.length - 1;
 

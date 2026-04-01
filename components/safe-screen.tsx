@@ -1,7 +1,13 @@
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export const SafeScreen = ({ children }: { children: React.ReactNode }) => {
+export const SafeScreen = ({
+  children,
+  paddingBottom,
+}: {
+  children: React.ReactNode;
+  paddingBottom?: number;
+}) => {
   const insets = useSafeAreaInsets();
 
   return (
@@ -9,6 +15,7 @@ export const SafeScreen = ({ children }: { children: React.ReactNode }) => {
       className="bg-background-50 flex-1"
       style={{
         paddingTop: insets.top,
+        paddingBottom,
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import { ProductColorSheet } from "@/components/action-sheet";
+import { AppHeader } from "@/components/app-header";
 import { ProductReviewsModal } from "@/components/modal";
 import { ProductReviewItem } from "@/components/product";
 import { SafeScreen } from "@/components/safe-screen";
@@ -116,6 +117,8 @@ const ProductDetails = () => {
   return (
     <SafeScreen>
       <View className="w-full h-full">
+        <AppHeader title="Clothes" />
+
         <View style={{ height: height * 0.35 }}>
           <PagerView
             ref={pagerRef}
@@ -235,7 +238,7 @@ const ProductDetails = () => {
               {PRODUCT_REVIEWS.length} reviews
             </Text>
 
-            {PRODUCT_REVIEWS.slice(0, 5).map((review) => (
+            {PRODUCT_REVIEWS.slice(0, 3).map((review) => (
               <ProductReviewItem key={review.id} review={review} />
             ))}
 

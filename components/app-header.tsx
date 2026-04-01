@@ -19,7 +19,7 @@ export function AppHeader({
   const router = useRouter();
 
   return (
-    <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200  mb-4">
+    <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
       <View className="flex-row items-center">
         {showBack && (
           <Pressable
