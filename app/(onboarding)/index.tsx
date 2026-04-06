@@ -34,7 +34,7 @@ export default function OnboardingScreen() {
     <SafeScreen>
       <View className="flex-1 px-6 pb-3">
         <View className="mb-2 mt-4 items-end">
-          <Pressable onPress={() => handleCreateGuestCart}>
+          <Pressable onPress={handleCreateGuestCart}>
             <Text className="text-purple-600 font-semibold">
               Continue as Guest
             </Text>

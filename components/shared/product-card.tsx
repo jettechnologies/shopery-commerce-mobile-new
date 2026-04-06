@@ -2,6 +2,7 @@ import { BLUR_HASH } from "@/utils/constants";
 import { formatCurrency } from "@/utils/libs";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
+import { Heart } from "lucide-react-native";
 import { Pressable, Text } from "react-native";
 import { Box } from "../ui/box";
 
@@ -26,6 +27,8 @@ export const ProductCard = ({
 
   const router = useRouter();
 
+  console.log(id, "id");
+
   return (
     <Box className="w-[49%] p-2 rounded-[16px] shadow-[2px]">
       <Pressable
@@ -43,6 +46,9 @@ export const ProductCard = ({
               height: "100%",
             }}
           />
+          <Pressable className="p-2 rounded-full bg-gray-400 absolute top-2 right-2">
+            <Heart size={16} color="#ffffff" />
+          </Pressable>
         </Box>
         <Box className="w-fit mx-auto mt-4">
           <Text className="text-base font-bold text-black mt-2 text-center">

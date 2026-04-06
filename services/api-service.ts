@@ -20,6 +20,21 @@ export interface ApiErrorResponse {
   error: string;
 }
 
+export interface PaginationMeta {
+  total: number;
+  totalPages: number;
+  currentPage: number;
+  limit: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export type PaginatedData<T, K extends string> = {
+  [P in K]: T[];
+} & {
+  pagination: PaginationMeta;
+};
+
 export async function apiRequest<T = any>(
   endpoint: string,
   options: RequestInit = {},
@@ -69,7 +84,7 @@ const apiService = {
   get: async <T = any>(
     endpoint: string,
     params?: Record<string, string | number | undefined>,
-    signal?: AbortSignal,
+    options?: RequestInit,
   ): Promise<ApiSuccessResponse<T>> => {
     let finalEndpoint = endpoint;
 
@@ -100,7 +115,7 @@ const apiService = {
 
     return apiRequest<T>(finalEndpoint, {
       method: "GET",
-      signal,
+      ...options,
     });
   },
   post: <T, D = any>(endpoint: string, data: D, options?: RequestInit) =>
@@ -110,20 +125,22 @@ const apiService = {
       ...options,
     }),
 
-  put: <T, D = any>(endpoint: string, data: D) =>
+  put: <T, D = any>(endpoint: string, data: D, options?: RequestInit) =>
     apiRequest<T>(endpoint, {
       method: "PUT",
       body: JSON.stringify(data),
+      ...options,
     }),
 
-  patch: <T, D = any>(endpoint: string, data: D) =>
+  patch: <T, D = any>(endpoint: string, data: D, options?: RequestInit) =>
     apiRequest<T>(endpoint, {
       method: "PATCH",
       body: JSON.stringify(data),
+      ...options,
     }),
 
-  delete: <T>(endpoint: string) =>
-    apiRequest<T>(endpoint, { method: "DELETE" }),
+  delete: <T>(endpoint: string, options?: RequestInit) =>
+    apiRequest<T>(endpoint, { method: "DELETE", ...options }),
 };
 
 export default apiService;

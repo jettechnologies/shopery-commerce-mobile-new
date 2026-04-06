@@ -19,6 +19,7 @@ export function OtpForm({ email }: { email: string }) {
     control,
     handleSubmit,
     formState: { isSubmitting },
+    resetField,
   } = useForm<OtpType>({
     resolver: zodResolver(OtpSchema),
   });
@@ -36,11 +37,16 @@ export function OtpForm({ email }: { email: string }) {
   });
 
   const handleResend = async () => {
-    await resendVerification({ email });
+    try {
+      await resendVerification({ email });
 
-    const newTime = new Date();
-    newTime.setSeconds(newTime.getSeconds() + 120);
-    restart(newTime);
+      resetField("otp");
+
+      const newExpiry = new Date(Date.now() + 2 * 60 * 1000);
+      restart(newExpiry);
+    } catch (error) {
+      console.error("Failed to resend OTP:", error);
+    }
   };
 
   const onSubmit = async (data: OtpType) => {

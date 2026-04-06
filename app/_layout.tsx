@@ -20,24 +20,26 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useFonts } from "expo-font";
 import { useEffect } from "react";
 
+import { CartDrawer } from "@/components/features/cart/cart-drawer";
+import { NotificationDrawer } from "@/components/features/notifications/notification-drawer";
+import { SearchDrawer } from "@/components/features/search/search-drawer";
+import { useAuthStore } from "@/store/auth-store";
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
 
-// export const unstable_settings = {
-//   initialRouteName: "(onboarding)",
-// };
-
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
-// export const unstable_settings = {
-//   anchor: "(tabs)",
-// };
-
 export default function RootLayout() {
   const colorScheme = useColorScheme();
+  const hydrate = useAuthStore((s) => s.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
 
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -65,19 +67,12 @@ export default function RootLayout() {
         <ToastProvider>
           <TanstackQueryProvider>
             <SafeAreaProvider>
-              {/* <Stack>
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="(onboarding)"
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="modal"
-                  options={{ presentation: "modal", title: "Modal" }}
-                />
-              </Stack> */}
               <Stack screenOptions={{ headerShown: false }} />
+
+              {/* Global Drawers */}
+              <CartDrawer />
+              <SearchDrawer />
+              <NotificationDrawer />
             </SafeAreaProvider>
           </TanstackQueryProvider>
         </ToastProvider>
