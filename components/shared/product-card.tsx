@@ -27,8 +27,6 @@ export const ProductCard = ({
 
   const router = useRouter();
 
-  console.log(id, "id");
-
   return (
     <Box className="w-[49%] p-2 rounded-[16px] shadow-[2px]">
       <Pressable

@@ -1,14 +1,14 @@
 import {
   CursorPaginatedResponse,
-  PaginatedResponse,
   Product,
+  ProductPaginatedResponse,
 } from "@/types/response-types.";
 import { ENDPOINTS } from "@/utils/endpoints";
 import apiService from "./api-service";
 
 export const ProductService = {
   getProducts: async (page = 1, limit = 10) => {
-    const response = await apiService.get<PaginatedResponse<Product>>(
+    const response = await apiService.get<ProductPaginatedResponse<Product>>(
       ENDPOINTS.products.list,
       {
         page,
@@ -50,7 +50,7 @@ export const ProductService = {
     page?: number;
     limit?: number;
   }) => {
-    const response = await apiService.get<PaginatedResponse<Product>>(
+    const response = await apiService.get<ProductPaginatedResponse<Product>>(
       ENDPOINTS.products.filter,
       params,
     );

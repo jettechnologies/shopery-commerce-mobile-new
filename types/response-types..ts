@@ -98,7 +98,7 @@ export interface Product {
   variants: Variant[];
 }
 
-export type PaginatedResponse<T> = PaginatedData<T, "products">;
+export type ProductPaginatedResponse<T> = PaginatedData<T, "products">;
 
 export interface CursorPaginatedResponse<T> {
   products: T[];
