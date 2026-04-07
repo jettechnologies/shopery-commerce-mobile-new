@@ -1,6 +1,6 @@
 import { AppButton } from "@/components/app-button";
 import { ReusableDrawer } from "@/components/shared/reusable-drawer";
-import { useCartMutations } from "@/hooks/use-cart";
+import { useCart, useCartMutations } from "@/hooks/use-cart";
 import { useDebouncedCartUpdate } from "@/hooks/use-debounced-cart";
 import { useCartStore } from "@/store/cart-store";
 import { useDrawerStore } from "@/store/drawer-store";
@@ -13,6 +13,8 @@ const { width } = Dimensions.get("window");
 
 export const CartDrawer = () => {
   const { isCartOpen, closeCart } = useDrawerStore();
+  // Sync cart store whenever the query data changes or is invalidated
+  useCart();
   const { items, totalAmount, totalItems } = useCartStore();
   const { removeItem } = useCartMutations();
   const debouncedUpdate = useDebouncedCartUpdate();
@@ -31,7 +33,7 @@ export const CartDrawer = () => {
   const renderCartItem = (item: any) => (
     <View
       key={item.id}
-      className="flex-row items-center mb-6 bg-white p-2 rounded-2xl shadow-sm border border-gray-50"
+      className="flex-row items-center mb-6 bg-gray-50/50 p-2 rounded-2xl"
     >
       <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
         <Image
@@ -60,14 +62,14 @@ export const CartDrawer = () => {
           <View className="flex-row items-center bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
             <Pressable
               onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
-              className="w-6 h-6 items-center justify-center rounded-full bg-white shadow-sm"
+              className="w-6 h-6 items-center justify-center rounded-full bg-white border border-gray-200"
             >
               <Minus size={12} color="#000" />
             </Pressable>
             <Text className="mx-3 font-bold text-sm">{item.quantity}</Text>
             <Pressable
               onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
-              className="w-6 h-6 items-center justify-center rounded-full bg-white shadow-sm"
+              className="w-6 h-6 items-center justify-center rounded-full bg-white border border-gray-200"
             >
               <Plus size={12} color="#000" />
             </Pressable>
@@ -115,7 +117,8 @@ export const CartDrawer = () => {
       isOpen={isCartOpen}
       onClose={closeCart}
       title={`My Cart (${totalItems})`}
-      size="lg"
+      size="full"
+      anchor="right"
       footer={cartItems.length > 0 ? footer : null}
     >
       {cartItems.length > 0 ? (

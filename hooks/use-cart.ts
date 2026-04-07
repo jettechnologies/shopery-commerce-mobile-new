@@ -1,7 +1,13 @@
-import { useToastContext } from "@/context/toast-provider";
-import { CartService } from "@/services/cart";
+import { getCart } from "@/services/mutations/cart";
+import {
+  useAddToCart,
+  useClearCart,
+  useRemoveFromCart,
+  useUpdateCartItem,
+} from "@/services/tanstack-query/mutations/cart";
+import { QUERY_KEYS } from "@/services/tanstack-query/query-keys";
 import { useCartStore } from "@/store/cart-store";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 export const debounce = (fn: Function, delay: number) => {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -15,9 +21,9 @@ export const useCart = () => {
   const setCart = useCartStore((s) => s.setCart);
 
   return useQuery({
-    queryKey: ["cart"],
+    queryKey: QUERY_KEYS.cart.base(),
     queryFn: async () => {
-      const data = await CartService.getCart();
+      const data = await getCart();
       // Ensure data.items is correctly synced
       if (data && "items" in data) {
         setCart(data.items);
@@ -28,80 +34,10 @@ export const useCart = () => {
 };
 
 export const useCartMutations = () => {
-  const queryClient = useQueryClient();
-  const { openToast } = useToastContext();
-  const updateQuantity = useCartStore((s) => s.updateQuantity);
-  const removeItemFromStore = useCartStore((s) => s.removeItem);
-
-  const addItemMutation = useMutation({
-    mutationFn: CartService.addToCart,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
-      openToast("Item added to cart", "success");
-    },
-    onError: (error: any) => {
-      openToast(error?.message || "Failed to add item", "error");
-    },
-  });
-
-  const updateItemMutation = useMutation({
-    mutationFn: CartService.updateCartItem,
-    onMutate: async ({ cartItemId, quantity }) => {
-      await queryClient.cancelQueries({ queryKey: ["cart"] });
-      const previousCart = queryClient.getQueryData(["cart"]);
-
-      // Optimistic update
-      updateQuantity(cartItemId, quantity);
-
-      return { previousCart };
-    },
-    onError: (err, variables, context) => {
-      if (context?.previousCart) {
-        queryClient.setQueryData(["cart"], context.previousCart);
-      }
-      openToast("Failed to update quantity", "error");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
-    },
-  });
-
-  const removeItemMutation = useMutation({
-    mutationFn: CartService.removeFromCart,
-    onMutate: async (cartItemId) => {
-      await queryClient.cancelQueries({ queryKey: ["cart"] });
-      const previousCart = queryClient.getQueryData(["cart"]);
-
-      // Optimistic update
-      removeItemFromStore(cartItemId);
-
-      return { previousCart };
-    },
-    onSuccess: () => {
-      openToast("Item removed from cart", "success");
-    },
-    onError: (err, variables, context) => {
-      if (context?.previousCart) {
-        queryClient.setQueryData(["cart"], context.previousCart);
-      }
-      openToast("Failed to remove item", "error");
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
-    },
-  });
-
-  const clearCartMutation = useMutation({
-    mutationFn: CartService.clearCart,
-    onSuccess: () => {
-      useCartStore.getState().clearCart();
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
-      openToast("Cart cleared", "success");
-    },
-    onError: () => {
-      openToast("Failed to clear cart", "error");
-    },
-  });
+  const addItemMutation = useAddToCart();
+  const updateItemMutation = useUpdateCartItem();
+  const removeItemMutation = useRemoveFromCart();
+  const clearCartMutation = useClearCart();
 
   return {
     addItem: addItemMutation.mutate,

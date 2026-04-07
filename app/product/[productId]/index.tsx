@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/icon";
 import { PRODUCT_REVIEWS } from "@/data";
 import { useCartMutations } from "@/hooks/use-cart";
 import { useGetProductById } from "@/services/tanstack-query/queries/use-products-query";
+import { useCartStore } from "@/store/cart-store";
 import { useDrawerStore } from "@/store/drawer-store";
 import { type Variant } from "@/types/response-types.";
 import { formatCurrency } from "@/utils/libs";
@@ -50,6 +51,7 @@ const ProductDetails = () => {
   } = useGetProductById(productId as string);
 
   const { addItem, isAdding } = useCartMutations();
+  const { totalItems } = useCartStore();
   const { openCart } = useDrawerStore();
 
   const pagerRef = useRef<PagerView>(null);
@@ -59,7 +61,6 @@ const ProductDetails = () => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  const [colorsSheetVisible, setColorsSheetVisible] = useState(false);
   const [reviewsVisible, setReviewsVisible] = useState(false);
   const [visibleReviewsCount, setVisibleReviewsCount] = useState(5);
 
@@ -139,9 +140,10 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     if (!selectedVariant) return;
+    
     addItem({
-      productId: product.productId,
-      variantId: Number(selectedVariant.id),
+      productId: product.productId, // This should be the UUID string
+      variantId: Number(selectedVariant.id), // Ensure this is a number
       quantity: productCount,
     });
   };
@@ -160,6 +162,13 @@ const ProductDetails = () => {
           rightElement={
             <Pressable onPress={openCart} className="relative p-2">
               <Icon as={ShoppingBag} size="xl" color="black" />
+              {totalItems > 0 && (
+                <View className="absolute top-1 right-1 bg-red-500 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 border-2 border-white">
+                  <Text className="text-white text-[10px] font-bold">
+                    {totalItems > 99 ? "99+" : totalItems}
+                  </Text>
+                </View>
+              )}
             </Pressable>
           }
         />
@@ -345,7 +354,7 @@ const ProductDetails = () => {
           <AppButton
             onPress={handleAddToCart}
             isLoading={isAdding}
-            className="bg-purple-600 px-8 py-4 rounded-2xl flex-row items-center shadow-lg shadow-purple-200"
+            className="bg-purple-600 px-8 py-4 min-w-[100px] rounded-2xl flex-row items-center shadow-lg shadow-purple-200"
           >
             <View className="flex-row items-center gap-2">
               <ShoppingBag size={20} color="#fff" />

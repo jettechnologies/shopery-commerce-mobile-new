@@ -50,7 +50,7 @@ export const SearchDrawer = () => {
       isOpen={isSearchOpen}
       onClose={closeSearch}
       size="full"
-      anchor="bottom"
+      anchor="right"
     >
       <View className="pt-2">
         <View className="flex-row items-center bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 mb-6">
@@ -82,7 +82,7 @@ export const SearchDrawer = () => {
           {LAST_SEARCHES.map((item, i) => (
             <View
               key={i}
-              className="flex-row items-center bg-white border border-gray-100 rounded-xl px-4 py-2 shadow-sm"
+              className="flex-row items-center bg-gray-50 border border-gray-100 rounded-xl px-4 py-2"
             >
               <Text className="text-gray-600 mr-2">{item}</Text>
               <X size={14} color="#9CA3AF" />
@@ -98,7 +98,7 @@ export const SearchDrawer = () => {
           {POPULAR_SEARCHES.map((item) => (
             <View
               key={item.id}
-              className="flex-row items-center mb-4 bg-white p-3 rounded-2xl border border-gray-50 shadow-sm"
+              className="flex-row items-center mb-4 bg-gray-50/50 p-3 rounded-2xl"
             >
               <View className="w-16 h-16 rounded-xl bg-gray-100 overflow-hidden">
                 <Image source={item.image} className="w-full h-full" />

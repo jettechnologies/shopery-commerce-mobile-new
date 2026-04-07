@@ -28,4 +28,7 @@ export const QUERY_KEYS = {
       params,
     ],
   },
+  cart: {
+    base: () => ["cart"],
+  },
 };

@@ -50,6 +50,7 @@ export const NotificationDrawer = () => {
       onClose={closeNotification}
       title="Notification"
       size="full"
+      anchor="right"
     >
       <View className="flex-row items-center justify-between mt-2 mb-4">
         <Text className="text-gray-900 font-bold text-lg">Recent</Text>

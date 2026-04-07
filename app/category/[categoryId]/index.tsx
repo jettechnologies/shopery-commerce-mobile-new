@@ -49,7 +49,9 @@ const CategoryDetails = () => {
         ListEmptyComponent={
           !isLoading ? (
             <Box className="mt-10 items-center">
-              <Text className="text-gray-500 text-lg">No products found in this category</Text>
+              <Text className="text-gray-500 text-lg">
+                No products found in this category
+              </Text>
             </Box>
           ) : null
         }
@@ -69,7 +71,7 @@ const CategoryDetails = () => {
             isHttpSrc={true}
             name={product.name}
             price={product.minPrice}
-            id={product.id}
+            id={product.productId}
           />
         )}
       />

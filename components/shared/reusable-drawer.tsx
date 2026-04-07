@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/drawer';
 import { Icon, CloseIcon } from '@/components/ui/icon';
 import { View, Text } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface ReusableDrawerProps {
   isOpen: boolean;
@@ -28,8 +29,12 @@ export const ReusableDrawer: React.FC<ReusableDrawerProps> = ({
   children,
   footer,
   size = 'md',
-  anchor = 'bottom',
+  anchor = 'right',
 }) => {
+  const insets = useSafeAreaInsets();
+  
+  const isBottom = anchor === 'bottom';
+
   return (
     <Drawer
       isOpen={isOpen}
@@ -38,13 +43,18 @@ export const ReusableDrawer: React.FC<ReusableDrawerProps> = ({
       anchor={anchor}
     >
       <DrawerBackdrop />
-      <DrawerContent className="rounded-t-[32px] p-0">
-        <View className="items-center pt-3 pb-2">
-           <View className="w-12 h-1 bg-gray-300 rounded-full" />
-        </View>
+      <DrawerContent 
+        className={`${isBottom ? 'rounded-t-[32px]' : (size === 'full' ? 'rounded-0' : 'rounded-l-[32px]')} p-0`}
+        style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+      >
+        {isBottom && (
+          <View className="items-center pt-3 pb-2">
+            <View className="w-12 h-1 bg-gray-300 rounded-full" />
+          </View>
+        )}
         
         {((title !== undefined) || (onClose !== undefined)) && (
-          <DrawerHeader className="px-6 py-4 border-b border-gray-100">
+          <DrawerHeader className={`px-6 py-4 border-b border-gray-100 ${!isBottom ? 'pt-2' : ''}`}>
             {title && <Text className="text-lg font-bold text-gray-900">{title}</Text>}
             <DrawerCloseButton>
               <Icon as={CloseIcon} className="text-gray-500" />
