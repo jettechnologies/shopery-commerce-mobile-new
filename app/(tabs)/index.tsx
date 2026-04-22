@@ -13,6 +13,7 @@ import {
   useGetCategories,
   useGetCategoryProducts,
 } from "@/services/tanstack-query/queries/use-categories-query";
+import { useGetProfile } from "@/services/tanstack-query/queries/use-profile-query";
 import { useDrawerStore } from "@/store/drawer-store";
 import { Link } from "expo-router";
 import { BellIcon, SearchIcon } from "lucide-react-native";
@@ -179,6 +180,7 @@ const HomeScreen = () => {
   const [currentView, setCurrentView] = useState<"home" | "category">("home");
   const pagerRef = useRef<PagerView>(null);
   const activeIndex = useSharedValue(0);
+  const { data: profile, isLoading: isProfileLoading } = useGetProfile();
 
   const { handleScroll } = useTabBar();
   const { openSearch, openNotification } = useDrawerStore();
@@ -215,20 +217,38 @@ const HomeScreen = () => {
     <SafeScreen>
       <View style={{ flex: 1 }}>
         <HStack className="px-4 py-4 justify-between">
-          <HStack className="gap-x-3">
-            <Avatar size="md">
-              <AvatarFallbackText>Jane Doe</AvatarFallbackText>
-              <AvatarImage
-                source={require("@/assets/images/user-avatar.jpg")}
-              />
-            </Avatar>
-            <VStack>
-              <Text className="text-[18px] text-black font-bold">Hi John</Text>
-              <Text className="text-sm font-normal text-gray-500">
-                Lets get shopping
-              </Text>
-            </VStack>
-          </HStack>
+          {isProfileLoading ? (
+            <HStack className="gap-x-3 items-center">
+              <Box className="w-12 h-12 rounded-full bg-gray-200 animate-pulse" />
+              <VStack className="gap-y-1">
+                <Box className="w-32 h-5 bg-gray-200 rounded animate-pulse" />
+                <Box className="w-24 h-4 bg-gray-100 rounded animate-pulse" />
+              </VStack>
+            </HStack>
+          ) : (
+            <HStack className="gap-x-3">
+              <Avatar size="md">
+                <AvatarFallbackText>{profile?.name}</AvatarFallbackText>
+                <AvatarImage
+                  source={
+                    profile?.userProfileImage
+                      ? {
+                          uri: profile.userProfileImage.imageUrl,
+                        }
+                      : require("@/assets/images/user-avatar.jpg")
+                  }
+                />
+              </Avatar>
+              <VStack>
+                <Text className="text-[18px] text-black font-bold">
+                  {profile?.name}
+                </Text>
+                <Text className="text-sm font-normal text-gray-500">
+                  Lets get shopping
+                </Text>
+              </VStack>
+            </HStack>
+          )}
           <HStack className="gap-x-2">
             <Pressable onPress={openSearch} className="p-2">
               <SearchIcon size={24} color="black" />
