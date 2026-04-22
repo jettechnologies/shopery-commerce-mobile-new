@@ -157,7 +157,7 @@ const ProductDetails = () => {
             <Pressable onPress={openCart} className="relative p-2">
               <Icon as={ShoppingBag} size="xl" color="black" />
               {totalItems > 0 && (
-                <View className="absolute top-1 right-1 bg-red-500 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 border-2 border-white">
+                <View className="absolute top-1 right-1 bg-purple-600 rounded-full min-w-[18px] h-[18px] items-center justify-center px-1 border-2 border-white">
                   <Text className="text-white text-[10px] font-bold">
                     {totalItems > 99 ? "99+" : totalItems}
                   </Text>

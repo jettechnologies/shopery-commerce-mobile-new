@@ -14,6 +14,8 @@ import {
   User,
 } from "lucide-react-native";
 import { Pressable, ScrollView, Text, View } from "react-native";
+import { useState } from "react";
+import { LogoutModal } from "@/components/modal";
 
 interface SettingItemProps {
   icon: React.ReactNode;
@@ -61,10 +63,12 @@ const SectionTitle = ({ title }: { title: string }) => (
 
 const Profile = () => {
   const { logout } = useAuthStore();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
     logout();
     router.replace("/(auth)/login");
+    setShowLogoutModal(false);
   };
 
   return (
@@ -131,11 +135,17 @@ const Profile = () => {
           <SettingItem
             icon={<LogOut size={22} color="#ef4444" />}
             label="Logout"
-            isDestructive
-            onPress={handleLogout}
-          />
-        </ScrollView>
-      </View>
+             isDestructive
+             onPress={() => setShowLogoutModal(true)}
+           />
+         </ScrollView>
+
+         <LogoutModal
+           isVisible={showLogoutModal}
+           onClose={() => setShowLogoutModal(false)}
+           onConfirm={handleLogout}
+         />
+       </View>
     </SafeScreen>
   );
 };

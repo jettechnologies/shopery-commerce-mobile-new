@@ -14,9 +14,10 @@ import {
   useGetCategoryProducts,
 } from "@/services/tanstack-query/queries/use-categories-query";
 import { useGetProfile } from "@/services/tanstack-query/queries/use-profile-query";
+import { useCartStore } from "@/store/cart-store";
 import { useDrawerStore } from "@/store/drawer-store";
 import { Link } from "expo-router";
-import { BellIcon, SearchIcon } from "lucide-react-native";
+import { BellIcon, SearchIcon, ShoppingBag } from "lucide-react-native";
 import { useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -182,8 +183,9 @@ const HomeScreen = () => {
   const activeIndex = useSharedValue(0);
   const { data: profile, isLoading: isProfileLoading } = useGetProfile();
 
+  const { totalItems } = useCartStore();
   const { handleScroll } = useTabBar();
-  const { openSearch, openNotification } = useDrawerStore();
+  const { openSearch, openNotification, openCart } = useDrawerStore();
 
   const indicatorStyle = useAnimatedStyle(() => {
     return {
@@ -255,6 +257,16 @@ const HomeScreen = () => {
             </Pressable>
             <Pressable onPress={openNotification} className="p-2">
               <BellIcon size={24} color="black" />
+            </Pressable>
+            <Pressable onPress={openCart} className="p-2 relative">
+              <ShoppingBag size={24} color="black" />
+              {totalItems > 0 && (
+                <View className="absolute top-1 right-1 bg-purple-600 rounded-full w-4 h-4 items-center justify-center">
+                  <Text className="text-[10px] text-white font-bold">
+                    {totalItems > 9 ? "9+" : totalItems}
+                  </Text>
+                </View>
+              )}
             </Pressable>
           </HStack>
         </HStack>
