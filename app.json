@@ -10,7 +10,12 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.tjan04.shopery-ecommerce-app"
+      "bundleIdentifier": "com.tjan04.shopery-ecommerce-app",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos to upload a profile picture.",
+        "NSCameraUsageDescription": "The app uses the camera to take profile photos.",
+        "NSPhotoLibraryAddUsageDescription": "The app saves images to your library."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -48,6 +53,21 @@
         {
           "android": {
             "parentTheme": "Material3.Dynamic"
+          }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "The app uses the camera to take profile photos.",
+          "colors": {
+            "cropToolbarColor": "#5B5BD6"
+          },
+          "dark": {
+            "colors": {
+              "cropToolbarColor": "#4F46E5"
+            }
           }
         }
       ],

@@ -15,7 +15,11 @@ export const QUERY_KEYS = {
   products: {
     base: () => ["products"],
     list: (params?: any) => [...QUERY_KEYS.products.base(), "list", params],
-    detail: (idOrSlug: string) => [...QUERY_KEYS.products.base(), "detail", idOrSlug],
+    detail: (idOrSlug: string) => [
+      ...QUERY_KEYS.products.base(),
+      "detail",
+      idOrSlug,
+    ],
   },
   categories: {
     base: () => ["categories"],
@@ -30,5 +34,32 @@ export const QUERY_KEYS = {
   },
   cart: {
     base: () => ["cart"],
+  },
+  search: {
+    base: () => ["search"],
+    autocomplete: (query: string) => [
+      ...QUERY_KEYS.search.base(),
+      "autocomplete",
+      query,
+    ],
+    results: (params: any) => [...QUERY_KEYS.search.base(), "results", params],
+  },
+  orders: {
+    base: () => ["orders"],
+    byUser: (params?: any) => [...QUERY_KEYS.orders.base(), "user", params],
+    history: (params?: any) => [...QUERY_KEYS.orders.base(), "history", params],
+    detail: (id: string) => [...QUERY_KEYS.orders.base(), "detail", id],
+  },
+  profile: {
+    base: () => ["profile"],
+  },
+  wishlist: {
+    base: () => ["wishlist"],
+  },
+  checkout: {
+    base: () => ["checkout"],
+  },
+  address: {
+    base: () => ["address"],
   },
 };

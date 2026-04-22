@@ -21,7 +21,15 @@ export const AppButton = ({
 }: AppButtonProps) => {
   return (
     <Button
-      className={`bg-purple-500 active:bg-purple-600 rounded-full ${className ?? ""}`}
+      // className={`bg-purple-500 active:bg-purple-600 rounded-full ${className ?? ""}`}
+
+      className={`
+        bg-purple-500 
+        data-[active=true]:bg-purple-600 
+        data-[disabled=true]:opacity-50
+        rounded-full 
+        ${className ?? ""}
+      `}
       style={{ height }}
       onPress={onPress}
       disabled={isLoading || rest.disabled}

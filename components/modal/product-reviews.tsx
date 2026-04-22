@@ -25,7 +25,7 @@ export const ProductReviewsModal = ({
       ))}
 
       {visibleReviews < 20 && (
-        <Pressable onPress={loadMoreReviews}>
+        <Pressable onPress={loadMoreReviews} className="mb-4">
           <Text className="text-purple-500 text-center font-semibold">
             Load more
           </Text>

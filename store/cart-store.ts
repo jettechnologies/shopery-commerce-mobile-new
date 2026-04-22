@@ -9,7 +9,7 @@ export interface CartItem {
   totalPrice?: number;
   product?: {
     name: string;
-    images?: string[];
+    images?: { imageUrl: string; altText: string; isPrimary: boolean }[];
     description?: string;
   };
   variant?: {
@@ -35,14 +35,20 @@ export const useCartStore = create<CartStore>((set) => ({
 
   setCart: (items) => {
     const formattedItems = Object.fromEntries(
-      items.map((i) => [String(i.id), {
-        ...i,
-        quantity: Number(i.quantity),
-      }])
+      items.map((i) => [
+        String(i.id),
+        {
+          ...i,
+          quantity: Number(i.quantity),
+        },
+      ]),
     );
-    
+
     // Recalculate totals
-    const totalAmount = items.reduce((sum, i) => sum + (i.unitPrice * i.quantity), 0);
+    const totalAmount = items.reduce(
+      (sum, i) => sum + i.unitPrice * i.quantity,
+      0,
+    );
     const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
 
     set({
@@ -65,7 +71,10 @@ export const useCartStore = create<CartStore>((set) => ({
 
       // Recalculate totals
       const itemsArray = Object.values(newItems);
-      const totalAmount = itemsArray.reduce((sum, i) => sum + (i.unitPrice * i.quantity), 0);
+      const totalAmount = itemsArray.reduce(
+        (sum, i) => sum + i.unitPrice * i.quantity,
+        0,
+      );
       const totalItems = itemsArray.reduce((sum, i) => sum + i.quantity, 0);
 
       return {
@@ -78,11 +87,17 @@ export const useCartStore = create<CartStore>((set) => ({
   removeItem: (id) =>
     set((state) => {
       const { [String(id)]: removed, ...newItems } = state.items;
-      
+
       // Recalculate totals
       const itemsArray = Object.values(newItems);
-      const totalAmount = itemsArray.reduce((sum, i) => sum + (i.unitPrice * i.quantity), 0);
-      const totalItems = itemsArray.reduce((sum, i) => sum + Number(i.quantity), 0);
+      const totalAmount = itemsArray.reduce(
+        (sum, i) => sum + i.unitPrice * i.quantity,
+        0,
+      );
+      const totalItems = itemsArray.reduce(
+        (sum, i) => sum + Number(i.quantity),
+        0,
+      );
 
       return {
         items: newItems,

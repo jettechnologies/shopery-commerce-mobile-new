@@ -1,18 +1,28 @@
 import { AppButton } from "@/components/app-button";
+import { AddressSelectorModal } from "@/components/modal";
 import { ReusableDrawer } from "@/components/shared/reusable-drawer";
 import { useCart, useCartMutations } from "@/hooks/use-cart";
 import { useDebouncedCartUpdate } from "@/hooks/use-debounced-cart";
-import { useCartStore } from "@/store/cart-store";
+import { useCheckout } from "@/services/tanstack-query/mutations/use-checkout";
+import { useGetProfile } from "@/services/tanstack-query/queries/use-profile-query";
+import { useAuthStore } from "@/store/auth-store";
+import { CartItem, useCartStore } from "@/store/cart-store";
 import { useDrawerStore } from "@/store/drawer-store";
 import { formatCurrency } from "@/utils/libs";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react-native";
-import { Dimensions, Pressable, ScrollView, Text, View } from "react-native";
-
-const { width } = Dimensions.get("window");
+import { useState } from "react";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 export const CartDrawer = () => {
   const { isCartOpen, closeCart } = useDrawerStore();
+  const { user } = useAuthStore();
+  const { data: profile, isLoading: isProfileLoading } = useGetProfile();
+  const { mutateAsync: initiateCheckout, isPending: isCheckingOut } =
+    useCheckout();
+  const [isAddressModalVisible, setAddressModalVisible] = useState(false);
+
   // Sync cart store whenever the query data changes or is invalidated
   useCart();
   const { items, totalAmount, totalItems } = useCartStore();
@@ -24,64 +34,108 @@ export const CartDrawer = () => {
 
   const handleQuantityChange = (id: string | number, newQty: number) => {
     if (newQty < 1) return;
-    // Instant UI update
     updateQuantityStore(id, newQty);
-    // Debounced server sync
     debouncedUpdate(id, newQty);
   };
 
-  const renderCartItem = (item: any) => (
-    <View
-      key={item.id}
-      className="flex-row items-center mb-6 bg-gray-50/50 p-2 rounded-2xl"
-    >
-      <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
-        <Image
-          source={item.product?.images?.[0] || item.product?.image}
-          className="w-full h-full"
-          contentFit="cover"
-        />
-      </View>
+  const onCheckoutPress = () => {
+    if (!user) {
+      closeCart();
+      router.push("/(auth)/signup");
+      return;
+    }
 
-      <View className="flex-1 ml-4 justify-between h-24 py-1">
-        <View className="flex-row justify-between items-start">
-          <View className="flex-1 mr-2">
-            <Text className="text-gray-900 font-bold text-sm" numberOfLines={1}>
-              {item.product?.name || "Product"}
-            </Text>
-            <Text className="text-gray-400 text-xs mt-1">
-              Color: {item.variant?.color?.[0] || "Default"}
-            </Text>
-          </View>
-          <Pressable onPress={() => removeItem(item.id)}>
-            <Trash2 size={16} color="#EF4444" />
-          </Pressable>
+    const addresses = profile?.Address || [];
+
+    if (addresses.length === 0) {
+      closeCart();
+      router.push("/profile/addresses");
+      return;
+    }
+
+    setAddressModalVisible(true);
+  };
+
+  const handleAddressSelect = async (addressId: number) => {
+    console.log({
+      email: user?.email,
+      addressId: Number(addressId),
+      paymentId: "razorpay_123456",
+    });
+    try {
+      await initiateCheckout({
+        email: user?.email,
+        addressId: Number(addressId),
+        paymentId: "razorpay_123456",
+      });
+      setAddressModalVisible(false);
+      closeCart();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const renderCartItem = (item: CartItem) => {
+    return (
+      <View
+        key={item.id}
+        className="flex-row items-center mb-6 bg-gray-50/50 p-2 rounded-2xl"
+      >
+        <View className="w-24 h-24 rounded-2xl overflow-hidden bg-gray-100">
+          <Image
+            source={item.product?.images?.[0]?.imageUrl || ""}
+            style={{
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+            }}
+            contentFit="cover"
+          />
         </View>
 
-        <View className="flex-row justify-between items-end">
-          <View className="flex-row items-center bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
-            <Pressable
-              onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
-              className="w-6 h-6 items-center justify-center rounded-full bg-white border border-gray-200"
-            >
-              <Minus size={12} color="#000" />
-            </Pressable>
-            <Text className="mx-3 font-bold text-sm">{item.quantity}</Text>
-            <Pressable
-              onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
-              className="w-6 h-6 items-center justify-center rounded-full bg-white border border-gray-200"
-            >
-              <Plus size={12} color="#000" />
+        <View className="flex-1 ml-4 justify-between h-24 py-1">
+          <View className="flex-row justify-between items-start">
+            <View className="flex-1 mr-2">
+              <Text
+                className="text-gray-900 font-bold text-sm"
+                numberOfLines={1}
+              >
+                {item.product?.name || "Product"}
+              </Text>
+              <Text className="text-gray-400 text-xs mt-1">
+                Color: {item.variant?.color?.[0] || "Default"}
+              </Text>
+            </View>
+            <Pressable onPress={() => removeItem(item.id)}>
+              <Trash2 size={16} color="#EF4444" />
             </Pressable>
           </View>
 
-          <Text className="font-bold text-lg text-purple-600">
-            {formatCurrency({ amount: item.unitPrice * item.quantity })}
-          </Text>
+          <View className="flex-row justify-between items-end">
+            <View className="flex-row items-center bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
+              <Pressable
+                onPress={() => handleQuantityChange(item.id, item.quantity - 1)}
+                className="w-6 h-6 items-center justify-center rounded-full bg-white border border-gray-200"
+              >
+                <Minus size={12} color="#000" />
+              </Pressable>
+              <Text className="mx-3 font-bold text-sm">{item.quantity}</Text>
+              <Pressable
+                onPress={() => handleQuantityChange(item.id, item.quantity + 1)}
+                className="w-6 h-6 items-center justify-center rounded-full bg-white border border-gray-200"
+              >
+                <Plus size={12} color="#000" />
+              </Pressable>
+            </View>
+
+            <Text className="font-bold text-lg text-purple-600">
+              {formatCurrency({ amount: item.unitPrice * item.quantity })}
+            </Text>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   const footer = (
     <View className="w-full">
@@ -106,7 +160,8 @@ export const CartDrawer = () => {
 
       <AppButton
         title="Checkout"
-        onPress={() => {}}
+        onPress={onCheckoutPress}
+        isLoading={isCheckingOut}
         className="w-full bg-purple-600 rounded-2xl h-14"
       />
     </View>
@@ -141,6 +196,14 @@ export const CartDrawer = () => {
           </Text>
         </View>
       )}
+
+      <AddressSelectorModal
+        isVisible={isAddressModalVisible}
+        onClose={() => setAddressModalVisible(false)}
+        onSelectAddress={handleAddressSelect}
+        profile={profile}
+        isProfileLoading={isProfileLoading}
+      />
     </ReusableDrawer>
   );
 };

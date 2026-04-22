@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import type { ToastStatus } from "./toast-provider";
-// import { toast } from "sonner";
 
 // Extend MutationMeta to allow our custom keys
 declare module "@tanstack/react-query" {
@@ -77,7 +76,6 @@ function TanstackQueryProvider({
   onClientReady?: (client: QueryClient) => void;
 }) {
   const { openToast } = useToastContext();
-  // create the QueryClient once
   const [queryClient] = useState(() => createQueryClient({ openToast }));
 
   useEffect(() => {
@@ -87,10 +85,7 @@ function TanstackQueryProvider({
   }, [onClientReady, queryClient]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
 

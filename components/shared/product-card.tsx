@@ -1,3 +1,8 @@
+import {
+  useAddToWishlist,
+  useRemoveFromWishlist,
+} from "@/services/tanstack-query/mutations/use-wishlist-mutation";
+import { useGetWishlist } from "@/services/tanstack-query/queries/use-wishlist-query";
 import { BLUR_HASH } from "@/utils/constants";
 import { formatCurrency } from "@/utils/libs";
 import { Image } from "expo-image";
@@ -26,6 +31,22 @@ export const ProductCard = ({
   const imageUrl = isHttpSrc ? imgSrc : imgPath;
 
   const router = useRouter();
+  const { data: wishlist } = useGetWishlist();
+  const { mutate: addToWishlist, isPending: isAdding } = useAddToWishlist();
+  const { mutate: removeFromWishlist, isPending: isRemoving } =
+    useRemoveFromWishlist();
+
+  const isFavorite = wishlist?.items.some(
+    (item) => item.product.productId === id,
+  );
+
+  const toggleFavorite = () => {
+    if (isFavorite) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist({ productId: id });
+    }
+  };
 
   return (
     <Box className="w-[49%] p-2 rounded-[16px] shadow-[2px]">
@@ -44,8 +65,19 @@ export const ProductCard = ({
               height: "100%",
             }}
           />
-          <Pressable className="p-2 rounded-full bg-gray-400 absolute top-2 right-2">
-            <Heart size={16} color="#ffffff" />
+          <Pressable
+            className="p-2 rounded-full bg-white/80 absolute top-2 right-2"
+            onPress={(e) => {
+              e.stopPropagation();
+              toggleFavorite();
+            }}
+            disabled={isAdding || isRemoving}
+          >
+            <Heart
+              size={16}
+              color={isFavorite ? "#ef4444" : "#6b7280"}
+              fill={isFavorite ? "#ef4444" : "transparent"}
+            />
           </Pressable>
         </Box>
         <Box className="w-fit mx-auto mt-4">

@@ -42,13 +42,26 @@ export async function apiRequest<T = any>(
   try {
     const token = await getSecureItem("access_token");
 
+    const headers = new Headers({
+      Authorization: token ? `Bearer ${token}` : "",
+    });
+
+    // If options.headers is a Headers object or a plain object, merge it
+    if (options.headers) {
+      const customHeaders = new Headers(options.headers);
+      customHeaders.forEach((value, key) => {
+        headers.set(key, value);
+      });
+    }
+
+    // Default to application/json if Content-Type is not explicitly removed or set
+    if (!headers.has("Content-Type") && !(options.body instanceof FormData)) {
+      headers.set("Content-Type", "application/json");
+    }
+
     const response = await fetch(`${baseUrl}${endpoint}`, {
       ...options,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token ? `Bearer ${token}` : "",
-        ...(options.headers || {}),
-      },
+      headers,
     });
 
     const data: ApiResponse<T> = await response.json();
@@ -141,6 +154,28 @@ const apiService = {
 
   delete: <T>(endpoint: string, options?: RequestInit) =>
     apiRequest<T>(endpoint, { method: "DELETE", ...options }),
+
+  postForm: <T>(endpoint: string, formData: FormData, options?: RequestInit) => {
+    // When sending FormData, we must NOT set Content-Type to application/json.
+    // Fetch will automatically set Content-Type to multipart/form-data with the correct boundary.
+    const customOptions: RequestInit = {
+      ...(options || {}),
+      method: "POST",
+      body: formData,
+    };
+
+    if (customOptions.headers) {
+      const headers = new Headers(customOptions.headers);
+      headers.delete("Content-Type");
+      customOptions.headers = headers;
+    } else {
+      customOptions.headers = {
+        // we explicitly set a header without Content-Type to override the default JSON handling in apiRequest
+      };
+    }
+
+    return apiRequest<T>(endpoint, customOptions);
+  },
 };
 
 export default apiService;

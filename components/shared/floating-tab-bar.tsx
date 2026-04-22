@@ -122,55 +122,111 @@ export const FloatingTabBar = ({
   );
 };
 
+// const styles = StyleSheet.create({
+//   container: {
+//     position: "absolute",
+//     left: 20,
+//     right: 20,
+//     alignItems: "center",
+//     justifyContent: "center",
+//     // Remove default background/shadow from container to use pill style
+//   },
+//   content: {
+//     flexDirection: "row",
+//     backgroundColor: "rgba(255, 255, 255, 0.7)",
+//     borderRadius: 40,
+//     paddingVertical: 10,
+//     paddingHorizontal: 12,
+//     width: "100%",
+//     justifyContent: "space-around",
+//     alignItems: "center",
+//     borderWidth: 2,
+//     borderColor: "rgba(255, 255, 255, 0.3)",
+//     overflow: "hidden",
+//     ...Platform.select({
+//       ios: {
+//         shadowColor: "#000",
+//         shadowOffset: { width: 0, height: 10 },
+//         shadowOpacity: 0.1,
+//         shadowRadius: 10,
+//       },
+//       android: {
+//         elevation: 10,
+//       },
+//     }),
+//   },
+//   tabItem: {
+//     paddingVertical: 6,
+//     // paddingHorizontal: 6,
+//     borderRadius: 25,
+//     alignItems: "center",
+//     justifyContent: "center",
+//     minWidth: 80,
+//   },
+//   activeTabItem: {
+//     backgroundColor: "rgba(91, 91, 214, 0.3)",
+//   },
+//   iconContainer: {
+//     marginBottom: 4,
+//   },
+//   label: {
+//     fontSize: 12,
+//     fontWeight: "500",
+//   },
+// });
+
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    left: 20,
-    right: 20,
+    left: 16,
+    right: 16,
     alignItems: "center",
-    justifyContent: "center",
-    // Remove default background/shadow from container to use pill style
+    borderRadius: 999,
+    overflow: "hidden",
   },
+
   content: {
     flexDirection: "row",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    borderRadius: 40,
+    borderRadius: 999,
     paddingVertical: 10,
     paddingHorizontal: 12,
     width: "100%",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "rgba(255, 255, 255, 0.3)",
-    overflow: "hidden",
+
     ...Platform.select({
       ios: {
+        backgroundColor: "rgba(255,255,255,0.7)",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.1,
         shadowRadius: 10,
       },
       android: {
-        elevation: 10,
+        backgroundColor: "#ffffff",
+        elevation: 12,
       },
     }),
   },
+
   tabItem: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 25,
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
-    minWidth: 80,
   },
+
   activeTabItem: {
-    backgroundColor: "rgba(91, 91, 214, 0.3)",
+    backgroundColor: "rgba(91,91,214,0.12)",
   },
+
   iconContainer: {
-    marginBottom: 4,
+    marginBottom: 2,
   },
+
   label: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "500",
   },
 });

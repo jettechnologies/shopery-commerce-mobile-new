@@ -1,6 +1,8 @@
 import { type BaseUser as User } from "@/types/response-types.";
 import { getSecureItem, removeSecureItem, setSecureItem } from "@/utils/libs";
 import { create } from "zustand";
+import apiService from "@/services/api-service";
+import { ENDPOINTS } from "@/utils/endpoints";
 
 type AuthState = {
   user: User | null;
@@ -65,6 +67,13 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   logout: async () => {
+    try {
+      // Call backend to invalidate the session / refresh token
+      await apiService.post(ENDPOINTS.auth.logout, {});
+    } catch (err) {
+      console.log("Backend logout failed or was already invalid", err);
+    }
+
     await removeSecureItem("access_token");
     await removeSecureItem("refresh_token");
 

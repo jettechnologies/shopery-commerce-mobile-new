@@ -216,3 +216,33 @@ export const PRODUCT_REVIEWS = Array.from({ length: 20 }).map((_, i) => ({
   rating: Math.floor(Math.random() * 5) + 1,
   createdAt: new Date().toISOString(),
 }));
+
+export const MOCK_ADDRESSES = [
+  {
+    id: 1,
+    title: "Home",
+    street: "123 Main Street, Apt 4B",
+    city: "New York",
+    state: "NY",
+    zipCode: "10001",
+    isDefault: true,
+  },
+  {
+    id: 2,
+    title: "Office",
+    street: "456 Market St, Suite 100",
+    city: "San Francisco",
+    state: "CA",
+    zipCode: "94105",
+    isDefault: false,
+  },
+  {
+    id: 3,
+    title: "Vacation Home",
+    street: "789 Ocean Drive",
+    city: "Miami",
+    state: "FL",
+    zipCode: "33139",
+    isDefault: false,
+  },
+];

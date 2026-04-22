@@ -5,12 +5,12 @@ import {
   LayoutAnimation,
   Modal,
   Platform,
+  Pressable,
   ScrollView,
   ScrollViewProps,
   StyleSheet,
   TextInput,
   UIManager,
-  View,
 } from "react-native";
 
 // Enable LayoutAnimation on Android
@@ -82,23 +82,26 @@ export default function KeyboardAvoidingModal({
       transparent
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
-        <View style={[styles.container, { paddingBottom: keyboardHeight }]}>
+      <Pressable style={styles.overlay} onPress={onClose}>
+        <Pressable
+          onPress={(e) => e.stopPropagation()}
+          style={[styles.container, { paddingBottom: keyboardHeight }]}
+        >
           <ScrollView
             ref={scrollRef}
             keyboardShouldPersistTaps="handled"
             contentContainerStyle={{
               paddingBottom: 40,
               width: "100%",
-              paddingHorizontal: 24,
+              paddingHorizontal: 16,
             }}
             style={{ width: "100%", alignSelf: "stretch" }}
             {...props}
           >
             {children}
           </ScrollView>
-        </View>
-      </View>
+        </Pressable>
+      </Pressable>
     </Modal>
   );
 }
@@ -106,11 +109,11 @@ export default function KeyboardAvoidingModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)", // modal overlay
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: "flex-end",
   },
   container: {
-    maxHeight: "80%", // modal height
+    maxHeight: "80%",
     backgroundColor: "#fff",
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,

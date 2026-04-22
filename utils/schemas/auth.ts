@@ -118,3 +118,27 @@ export const NewPasswordSchema = z
   });
 
 export type NewPasswordType = z.infer<typeof NewPasswordSchema>;
+
+export const ChangePasswordSchema = z
+  .object({
+    oldPassword: z
+      .string()
+      .min(6, "Old password must be at least 6 characters"),
+    newPassword: z
+      .string()
+      .min(8, "New password must be at least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.oldPassword !== data.newPassword, {
+    message: "New password must be different from old password",
+    path: ["newPassword"],
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type ChangePasswordType = z.infer<typeof ChangePasswordSchema>;
+
+
+

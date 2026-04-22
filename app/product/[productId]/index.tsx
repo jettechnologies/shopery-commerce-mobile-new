@@ -38,12 +38,6 @@ const { height } = Dimensions.get("window");
 const ProductDetails = () => {
   const { productId } = useLocalSearchParams();
 
-  // const {
-  //   data: product,
-  //   isLoading,
-  //   error,
-  // } = useGetProductDetail({ type: "id", value: productId as string });
-
   const {
     data: product,
     isLoading,
@@ -140,22 +134,22 @@ const ProductDetails = () => {
 
   const handleAddToCart = () => {
     if (!selectedVariant) return;
-    
+
     addItem({
-      productId: product.productId, // This should be the UUID string
-      variantId: Number(selectedVariant.id), // Ensure this is a number
+      productId: product.productId,
+      variantId: Number(selectedVariant.id),
       quantity: productCount,
     });
   };
 
-  const images =
+  const images: string[] =
     product.images.length > 0
-      ? product.images
-      : [require("@/assets/images/plain-white-tee.png")];
+      ? product.images.flatMap((image) => [image.imageUrl])
+      : [];
 
   return (
     <SafeScreen>
-      <View className="w-full h-full bg-white">
+      <View className="w-full h-full">
         <AppHeader
           title={product.categories?.[0]?.category?.name || "Product"}
           variant="secondary"
@@ -181,11 +175,18 @@ const ProductDetails = () => {
             onPageSelected={(e) => setPage(e.nativeEvent.position)}
           >
             {images.map((img: any, index: number) => (
-              <View key={index} className="flex-1">
+              <View
+                key={index}
+                className="flex-1 bg-gray-100 overflow-hidden relative"
+              >
                 <Image
-                  source={typeof img === "string" ? img : img}
-                  className="w-full h-full"
+                  source={img}
                   contentFit="cover"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    position: "absolute",
+                  }}
                 />
               </View>
             ))}

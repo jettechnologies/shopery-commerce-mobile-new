@@ -39,6 +39,41 @@ const products = {
   slug: (slug: string) => `/products/slug/${slug}`,
   filter: "/products/filter",
 };
+const productSearch = {
+  search: "/product-search",
+  autocomplete: "/product-search/autocomplete",
+};
+
+const orders = {
+  byUser: "/orders/user",
+  history: "/orders/history",
+  detail: (id: string) => `/orders/${id}`,
+  cancel: (id: string) => `/orders/${id}/cancel`,
+  updateAddress: (id: string) => `/orders/${id}/address`,
+};
+
+const wishlist = {
+  get: "/wishlist",
+  add: "/wishlist",
+  remove: (productId: string) => `/wishlist/${productId}`,
+};
+
+const profile = {
+  get: "/profile/get-profile",
+  update: "/profile/update-profile",
+  uploadImage: "/profile/image/upload",
+  deleteImage: "/profile/image/delete",
+  address: {
+    create: "/profile/address/create",
+    update: (id: string) => `/profile/address/edit-address/${id}`,
+  },
+  deactivate: (userId: string) => `/profile/deactive/${userId}`,
+  changePassword: "/profile/change-password",
+};
+
+const checkout = {
+  initiate: "/checkout",
+};
 
 export const ENDPOINTS = {
   auth,
@@ -46,4 +81,9 @@ export const ENDPOINTS = {
   cart,
   categories,
   products,
+  productSearch,
+  orders,
+  profile,
+  wishlist,
+  checkout,
 };
